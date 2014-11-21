@@ -18,13 +18,14 @@ function fetch_all_users($db) {
 
 //convert to json to return to index.html for ease of use
 function convert_to_json($data) {
-    $json = json_encode($data);
-    echo $json;
+    return json_encode($data);
 }
 
-//to start with dump out users
-convert_to_json(
-    fetch_all_users(
-        create_db_connection($dbname, $dbuser, $dbpass)
-    )
-);
+//connect
+$db = create_db_connection($dbname, $dbuser, $dbpass);
+
+//query
+$data = fetch_all_users($db);
+
+//echo the data out as JSON
+echo convert_to_json($data);
