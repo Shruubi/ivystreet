@@ -5,6 +5,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="jquery.dynatable.css">
 
     <style>
         .jumbotron {
@@ -12,12 +13,12 @@
             margin-top: 20px;
         }
 
-        /* Sortable tables */
-        table.sortable thead {
-            background-color:#eee;
-            color:#666666;
-            font-weight: bold;
-            cursor: default;
+        .dynatable-sort-header {
+            color: black;
+        }
+
+        .dynatable-sort-header:hover {
+            color: gray;
         }
     </style>
 </head>
@@ -31,56 +32,61 @@
         <p><a class="btn btn-primary btn-lg" href="#" role="button" onclick="begin_ajax();">Let's get started</a></p>
     </div>
 
-    <div id="table">
+    <div id="table_div" class="container">
 
     </div>
 </div>
 
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="sorttable.js"></script>
+<script src="jquery.dynatable.js"></script>
 
 <script type="text/javascript">
     //make ajax call
     function begin_ajax() {
+        $.dynatableSetup({
+            table: {
+                defaultColumnIdStyle: 'lowercase'
+            }
+        });
+
         $.ajax({
             url: "ajax.php"
         }).done(function(data) {
             //always log out result of ajax call, otherwise debugging will drive you mental
             console.log(data);
 
+            //convert data to an array of objects
+            data = jQuery.parseJSON(data);
+
             //get the table html
             var tableHtml = build_table(data);
-            inject_table_html(tableHtml);
+            inject_table_html(tableHtml, data);
         });
     }
 
     function build_table(data) {
-        var tableStr = '<table class="sortable"><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Phone Number</th></tr>';
-
-        for(var i = 0; i < data.length; i++) {
-            tableStr += '<tr>';
-
-            tableStr += '<td>' + data[i].id + '</td>';
-            tableStr += '<td>' + data[i].firstname + '</td>';
-            tableStr += '<td>' + data[i].lastname + '</td>';
-            tableStr += '<td>' + data[i].email + '</td>';
-            tableStr += '<td>' + data[i].phone + '</td>';
-
-            tableStr += '</tr>';
-        }
+        var tableStr = '<table id="data" class="table"><thead><tr><th>id</th><th>firstname</th><th>lastname</th><th>email</th><th>phone</th></tr></thead>';
 
         tableStr += '</table>';
+
+        console.log(tableStr);
 
         return tableStr;
     }
 
-    function inject_table_html(tableStr) {
+    function inject_table_html(tableStr, data) {
         //clear inner html
-        var tableDiv = $("#table");
+        var tableDiv = $("#table_div")[0];
 
         tableDiv.innerHTML = "";
         tableDiv.innerHTML = tableStr;
+
+        $('#data').dynatable({
+            dataset: {
+                records: data
+            }
+        });
     }
 </script>
 </body>
