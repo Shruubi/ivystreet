@@ -7,7 +7,7 @@ $dbpass = "db_password";
 
 //init connection
 function create_db_connection($dbname, $dbuser, $dbpass) {
-    return new PDO('mysql:host=localhost;dbname=' . $dbname . ';charset=utf8', $dbuser, $dbpass);
+    return new PDO('mysql:host=127.0.0.1;dbname=' . $dbname . ';charset=utf8', $dbuser, $dbpass);
 }
 
 //query all users
@@ -18,7 +18,8 @@ function fetch_all_users($db) {
 
 //convert to json to return to index.html for ease of use
 function convert_to_json($data) {
-    var_export($data);
+    $json = json_encode($data);
+    echo $json;
 }
 
 //to start with dump out users
