@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+
+    <style>
+        .jumbotron {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Sortable tables */
+        table.sortable thead {
+            background-color:#eee;
+            color:#666666;
+            font-weight: bold;
+            cursor: default;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="jumbotron">
+        <h1>Ivy Street Coding Test</h1>
+        <p>Click on the button below to begin!</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button" onclick="begin_ajax();">Let's get started</a></p>
+    </div>
+
+    <div id="table">
+
+    </div>
+</div>
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="sorttable.js"></script>
+
+<script type="text/javascript">
+    //make ajax call
+    function begin_ajax() {
+        $.ajax({
+            url: "ajax.php"
+        }).done(function(data) {
+            //always log out result of ajax call, otherwise debugging will drive you mental
+            console.log(data);
+
+            //get the table html
+            var tableHtml = build_table(data);
+            inject_table_html(tableHtml);
+        });
+    }
+
+    function build_table(data) {
+        var tableStr = '<table class="sortable"><tr><th>ID</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Phone Number</th></tr>';
+
+        for(var i = 0; i < data.length; i++) {
+            tableStr += '<tr>';
+
+            tableStr += '<td>' + data[i].id + '</td>';
+            tableStr += '<td>' + data[i].firstname + '</td>';
+            tableStr += '<td>' + data[i].lastname + '</td>';
+            tableStr += '<td>' + data[i].email + '</td>';
+            tableStr += '<td>' + data[i].phone + '</td>';
+
+            tableStr += '</tr>';
+        }
+
+        tableStr += '</table>';
+
+        return tableStr;
+    }
+
+    function inject_table_html(tableStr) {
+        //clear inner html
+        var tableDiv = $("#table");
+
+        tableDiv.innerHTML = "";
+        tableDiv.innerHTML = tableStr;
+    }
+</script>
+</body>
+</html>
